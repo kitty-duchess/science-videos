@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&family=Noto+Sans+SC:wght@300;500;600;700;800;900&family=Noto+Serif:ital,wght@1,500&display=block" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #04050d;
+        --ink: #ffffff;
+        --dim: #b8c3e6;
+        --blue: #8cc3ff;
+        --orange: #ffaa5a;
+        --gold: #ffe28c;
+        --font-display: "Noto Sans SC", sans-serif;
+        --font-math: "Noto Serif", serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: var(--ground);
+      }
+      #root {
+        position: relative; width: 1920px; height: 1080px; overflow: hidden;
+        font-family: var(--font-display); color: var(--ink);
+        background: var(--ground);
+      }
+      #cv { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+      .scene { position: absolute; inset: 0; }
+      .t { position: absolute; opacity: 0; visibility: hidden; }
+
+      /* chapter header */
+      .hd { left: 110px; top: 96px; display: flex; align-items: baseline; gap: 28px; }
+      .hd .num {
+        font-size: 120px; font-weight: 800; line-height: 1;
+        color: transparent; -webkit-text-stroke: 3px var(--blue);
+        font-family: "Inter", var(--font-display);
+      }
+      .hd .ttl { font-size: 66px; font-weight: 700; letter-spacing: 0.04em; }
+      .sub { left: 116px; top: 250px; font-size: 44px; font-weight: 700; color: var(--gold); letter-spacing: 0.05em; }
+
+      .b {
+        left: 120px; font-size: 46px; font-weight: 600; max-width: 760px; line-height: 1.35;
+        padding-left: 44px;
+      }
+      .b::before {
+        content: ""; position: absolute; left: 0; top: 0.42em; width: 22px; height: 22px;
+        border-radius: 50%; background: var(--orange); box-shadow: 0 0 18px var(--orange);
+      }
+      .b em { font-style: normal; color: var(--gold); }
+      .cap { left: 120px; font-size: 40px; font-weight: 500; max-width: 760px; line-height: 1.45; color: var(--dim); }
+      .cap b { color: #fff; font-weight: 700; }
+      .card {
+        left: 110px; width: 780px; padding: 26px 34px; border-radius: 16px;
+        background: rgba(18, 26, 56, 0.82); border-left: 8px solid var(--orange);
+        font-size: 38px; line-height: 1.45; font-weight: 600;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+      }
+      .card small { display: block; font-size: 28px; font-weight: 500; color: var(--dim); margin-top: 6px; }
+      .formula {
+        left: 116px; top: 330px; font-family: var(--font-math); font-size: 72px; font-style: italic; line-height: 1.1;
+        color: var(--gold); text-shadow: 0 0 30px rgba(255, 210, 120, 0.45); white-space: nowrap;
+      }
+      .center { left: 0; width: 1920px; text-align: center; }
+      .big { font-size: 96px; font-weight: 800; letter-spacing: 0.06em; text-shadow: 0 0 40px rgba(140, 195, 255, 0.6); }
+      .mid { font-size: 52px; font-weight: 600; text-shadow: 0 4px 30px rgba(0, 0, 0, 0.8); }
+      .count { font-size: 260px; font-weight: 900; color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 60px rgba(255, 170, 90, 0.9); }
+
+      #title1 { top: 330px; font-size: 220px; font-weight: 900; letter-spacing: 0.12em; text-shadow: 0 0 80px rgba(140, 195, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.6); }
+      #title2 { top: 610px; font-size: 54px; font-weight: 300; letter-spacing: 0.6em; color: var(--blue); font-family: "Inter", var(--font-display); }
+      #title3 { top: 720px; font-size: 40px; color: var(--dim); letter-spacing: 0.2em; }
+
+      #endTitle { top: 120px; font-size: 150px; font-weight: 900; letter-spacing: 0.14em; text-shadow: 0 0 60px rgba(140, 195, 255, 0.8); }
+      #endSub { top: 900px; font-size: 44px; color: var(--dim); letter-spacing: 0.12em; }
+      #fadeout { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="120" data-width="1920" data-height="1080">
+      <canvas id="cv" width="1920" height="1080" data-layout-allow-overflow></canvas>
+
+      <!-- S0 intro 0-15 -->
+      <div id="s0" class="scene clip" data-start="0" data-duration="15" data-track-index="1">
+        <div id="s0a" class="t center mid" style="top: 820px">你在夜空中看到的一颗星……</div>
+        <div id="s0b" class="t center big" style="top: 790px">其实可能是<span style="color: var(--orange)">两颗</span>！</div>
+        <div id="s0c" class="t center mid" style="top: 930px; color: var(--dim)">它们彼此环绕，亿万年不分离</div>
+        <div id="cd3" class="t center count" style="top: 380px">3</div>
+        <div id="cd2" class="t center count" style="top: 380px">2</div>
+        <div id="cd1" class="t center count" style="top: 380px">1</div>
+      </div>
+
+      <!-- S1 title + what is a binary 15-30 -->
+      <div id="s1" class="scene clip" data-start="15" data-duration="15" data-track-index="1">
+        <div id="title1" class="t center">双星环绕</div>
+        <div id="title2" class="t center">BINARY STARS</div>
+        <div id="title3" class="t center">一场持续亿万年的宇宙双人舞</div>
+        <div id="h1" class="t hd"><span class="num">01</span><span class="ttl">什么是双星？</span></div>
+        <div id="b11" class="t b" style="top: 330px"><em>两颗</em>恒星</div>
+        <div id="b12" class="t b" style="top: 430px">被彼此的<em>引力</em>牢牢束缚</div>
+        <div id="b13" class="t b" style="top: 530px">围绕<em>共同的质心</em>转圈</div>
+        <div id="c11" class="t card" style="top: 740px">银河系中，约<span style="color: var(--gold)">一半</span>的类日恒星拥有伴星<small>“孤独”的太阳反而是少数派</small></div>
+      </div>
+
+      <!-- S2 barycenter 30-45 -->
+      <div id="s2" class="scene clip" data-start="30" data-duration="15" data-track-index="1">
+        <div id="h2" class="t hd"><span class="num">02</span><span class="ttl">共同质心</span></div>
+        <div id="f21" class="t formula">m₁ · r₁ = m₂ · r₂</div>
+        <div id="c21" class="t cap" style="top: 470px">质量<b>越大</b>的星，离质心<b>越近</b>，<br />轨道也<b>越小</b></div>
+        <div id="c22" class="t cap" style="top: 620px">质量比变了，<b>周期却不变</b><br />（总质量没变）</div>
+        <div id="k21" class="t card" style="top: 800px">太阳和木星的质心<br />就在<span style="color: var(--gold)">太阳表面之外</span>一点点<small>太阳其实也在“绕圈”</small></div>
+      </div>
+
+      <!-- S3 Kepler III 45-60 -->
+      <div id="s3" class="scene clip" data-start="45" data-duration="15" data-track-index="1">
+        <div id="h3" class="t hd"><span class="num">03</span><span class="ttl">开普勒第三定律</span></div>
+        <div id="f31" class="t formula" style="font-size: 64px">T² = 4π² a³ / G(M₁+M₂)</div>
+        <div id="c31" class="t cap" style="top: 470px">距离 <b>×2</b> → 周期 <b>×2.83</b></div>
+        <div id="c32" class="t cap" style="top: 560px">同一对双星，<b>两颗星的周期永远相同</b></div>
+        <div id="k31" class="t card" style="top: 760px">量出周期 T 和距离 a<br />就能<span style="color: var(--gold)">「称」出恒星的质量</span><small>双星 = 宇宙的天平</small></div>
+      </div>
+
+      <!-- S4 ellipse / Kepler II + build 60-75 -->
+      <div id="s4" class="scene clip" data-start="60" data-duration="15" data-track-index="1">
+        <div id="h4" class="t hd"><span class="num">04</span><span class="ttl">椭圆轨道</span></div>
+        <div id="b41" class="t b" style="top: 320px">轨道往往是<em>椭圆</em></div>
+        <div id="b42" class="t b" style="top: 420px">靠近时<em>飞快</em>，远离时<em>变慢</em></div>
+        <div id="k41" class="t card" style="top: 560px">相同时间扫过<span style="color: var(--gold)">相同面积</span><small>—— 开普勒第二定律</small></div>
+        <div id="q41" class="t center big" style="top: 360px">那么，我们怎样<span style="color: var(--orange)">发现</span>双星？</div>
+        <div id="q42" class="t center count" style="top: 520px; color: var(--gold)">?</div>
+      </div>
+
+      <!-- S5 detection 75-90 -->
+      <div id="s5" class="scene clip" data-start="75" data-duration="15" data-track-index="1">
+        <div id="h5" class="t hd"><span class="num">05</span><span class="ttl">三种方法发现双星</span></div>
+        <div id="u51" class="t sub">① 目视双星</div>
+        <div id="c51" class="t cap" style="top: 340px">望远镜<b>直接分辨</b>出两颗星</div>
+        <div id="k51" class="t card" style="top: 520px">天狼星 A + 天狼星 B<small>绕转一周约 50 年</small></div>
+        <div id="u52" class="t sub">② 分光双星</div>
+        <div id="c52" class="t cap" style="top: 340px">看不清两颗星，<br />但光谱里的<b>谱线来回摆动</b></div>
+        <div id="k52" class="t card" style="top: 560px">靠近 → <span style="color: var(--blue)">蓝移</span>　远离 → <span style="color: #ff7a5c">红移</span><small>多普勒效应</small></div>
+        <div id="u53" class="t sub">③ 食双星</div>
+        <div id="c53" class="t cap" style="top: 340px">两颗星<b>轮流遮挡</b>，<br />亮度周期性变暗</div>
+        <div id="k53" class="t card" style="top: 560px">大陵五（Algol）<small>每 2.87 天“眨”一次眼</small></div>
+      </div>
+
+      <!-- S6 extreme binaries 90-105 -->
+      <div id="s6" class="scene clip" data-start="90" data-duration="15" data-track-index="1">
+        <div id="h6" class="t hd"><span class="num">06</span><span class="ttl">极端双星</span></div>
+        <div id="u61" class="t sub">物质交流</div>
+        <div id="c61" class="t cap" style="top: 340px">靠得太近时，一颗星的物质<br />会被同伴<b>「吸」走</b>，形成<b>吸积盘</b></div>
+        <div id="u62" class="t sub">黑洞双星：旋近 · 并合</div>
+        <div id="c62" class="t cap" style="top: 340px">越转越快、越靠越近，<br />向宇宙发出<b>引力波</b></div>
+        <div id="k62" class="t card" style="top: 560px">2015 年，LIGO 首次直接探测到引力波<small>GW150914：约 36 + 29 倍太阳质量的黑洞并合</small></div>
+      </div>
+
+      <!-- S7 recap + end 105-120 -->
+      <div id="s7" class="scene clip" data-start="105" data-duration="15" data-track-index="1">
+        <div id="h7" class="t hd"><span class="num">✦</span><span class="ttl">回顾</span></div>
+        <div id="r1" class="t b" style="top: 300px">绕<em>共同质心</em>转动</div>
+        <div id="r2" class="t b" style="top: 390px">质量大的离质心<em>近</em></div>
+        <div id="r3" class="t b" style="top: 480px">两星<em>周期相同</em></div>
+        <div id="r4" class="t b" style="top: 570px">开普勒定律<em>「称」质量</em></div>
+        <div id="r5" class="t b" style="top: 660px">黑洞双星发出<em>引力波</em></div>
+        <div id="endTitle" class="t center">双星环绕</div>
+        <div id="endSub" class="t center">下次仰望星空，想想那里正在上演的双人舞</div>
+      </div>
+
+      <div id="fadeout"></div>
+      <audio id="bgm" src="bgm.wav" data-start="0" data-duration="120" data-track-index="0" data-volume="1"></audio>
+    </div>
+
+    <script>
+      // ===================== beat grid (matches tools/make-bgm.mjs) =====================
+      const BPM = 128, B = 60 / BPM, BAR = B * 4, SEC = BAR * 8, DUR = 120;
+      const bt = (bar, beat = 0) => bar * BAR + beat * B; // time of a beat
+      const KICK = new Set();
+      for (let b = 4; b < 7; b++) KICK.add(b);
+      for (let b = 8; b < 32; b++) KICK.add(b);
+      for (let b = 40; b < 60; b++) KICK.add(b);
+      const CRASH = [8, 16, 24, 32, 40, 42, 45, 48, 56].map((b) => ({ t: b * BAR, big: b === 8 || b === 40 || b === 56, w: b === 42 || b === 45 ? 0.45 : b === 32 ? 0.6 : 1 }));
+
+      // ===================== canvas renderer =====================
+      const cv = document.getElementById("cv");
+      const ctx = cv.getContext("2d");
+      const W = 1920, H = 1080, TAU = Math.PI * 2;
+      const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+      const smooth = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
+      const outBack = (x) => { x = clamp(x); const c1 = 2.2, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+      const lerp = (a, b, x) => a + (b - a) * x;
+      const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+      const C = { blue: [140, 195, 255], orange: [255, 170, 90], yellow: [255, 226, 140], white: [255, 255, 255], red: [255, 110, 80], cyan: [110, 230, 255], violet: [170, 130, 255], gold: [255, 214, 120] };
+      const FONT = '"Noto Sans SC", sans-serif';
+
+      function kickEnv(t) {
+        const bar = Math.floor(t / BAR);
+        return KICK.has(bar) ? Math.exp(-(t % B) / 0.11) : 0;
+      }
+      function crashEnv(t, tau = 0.2) {
+        let f = 0;
+        for (const c of CRASH) { const d = t - c.t; if (d >= 0 && d < 2) f = Math.max(f, c.w * (c.big ? 1 : 0.6) * Math.exp(-d / tau)); }
+        return f;
+      }
+
+      // deterministic starfield
+      let seed = 20251105;
+      const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+      const STARS = Array.from({ length: 460 }, () => ({ x: rnd() * W, y: rnd() * H, s: 0.4 + rnd() * 1.6, d: 0.15 + rnd() * 0.85, p: rnd() * TAU, hue: rnd() }));
+
+      let K = 0; // kick envelope for current frame
+      const HUES = [[60, 40, 140], [40, 70, 150], [70, 40, 130], [30, 80, 140], [90, 30, 120], [30, 60, 150], [120, 30, 90], [50, 50, 140]];
+
+      function background(t) {
+        ctx.fillStyle = "#04050d";
+        ctx.fillRect(0, 0, W, H);
+        const si = Math.min(7, Math.floor(t / SEC));
+        const c = HUES[si];
+        const nx = 1300 + 200 * Math.sin(t * 0.07), ny = 420 + 120 * Math.cos(t * 0.05);
+        let g = ctx.createRadialGradient(nx, ny, 0, nx, ny, 900);
+        g.addColorStop(0, rgba(c, 0.32 + 0.08 * K));
+        g.addColorStop(1, rgba(c, 0));
+        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+        g = ctx.createRadialGradient(300, 900, 0, 300, 900, 700);
+        g.addColorStop(0, "rgba(20,60,120,0.25)"); g.addColorStop(1, "rgba(20,60,120,0)");
+        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+        for (const s of STARS) {
+          const x = ((s.x - t * 9 * s.d) % W + W) % W;
+          const tw = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * (0.8 + s.d * 2.2) + s.p));
+          const a = clamp(tw * (0.35 + 0.65 * s.d) + (s.d > 0.75 ? 0.5 * K : 0), 0, 1);
+          ctx.fillStyle = s.hue > 0.8 ? rgba(C.orange, a) : s.hue > 0.6 ? rgba(C.blue, a) : rgba(C.white, a);
+          const r = s.s * (1 + (s.d > 0.75 ? 0.5 * K : 0));
+          ctx.fillRect(x - r / 2, s.y - r / 2, r, r);
+        }
+      }
+
+      function star(x, y, r, col, glow = 1, alpha = 1) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.globalCompositeOperation = "lighter";
+        const R = r * 5 * glow * (1 + 0.35 * K);
+        let g = ctx.createRadialGradient(x, y, 0, x, y, R);
+        g.addColorStop(0, rgba(col, 0.9)); g.addColorStop(0.15, rgba(col, 0.42));
+        g.addColorStop(0.4, rgba(col, 0.1)); g.addColorStop(1, rgba(col, 0));
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, R, 0, TAU); ctx.fill();
+        ctx.globalCompositeOperation = "source-over";
+        g = ctx.createRadialGradient(x - r * 0.25, y - r * 0.25, 0, x, y, r);
+        g.addColorStop(0, "#ffffff"); g.addColorStop(0.55, rgba(col, 1)); g.addColorStop(1, rgba(col.map((v) => v * 0.75), 1));
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r * (1 + 0.08 * K), 0, TAU); ctx.fill();
+        ctx.restore();
+      }
+      function trail(cx, cy, r, ang, col, len = 1.3, alpha = 1, ry = null) {
+        ry = ry ?? r;
+        const n = 26;
+        ctx.save(); ctx.lineCap = "round";
+        for (let i = 0; i < n; i++) {
+          const a0 = ang - (len * i) / n, a1 = ang - (len * (i + 1)) / n;
+          ctx.strokeStyle = rgba(col, 0.6 * (1 - i / n) * alpha);
+          ctx.lineWidth = 6 * (1 - i / n) + 1;
+          ctx.beginPath(); ctx.ellipse(cx, cy, r, ry, 0, a1, a0); ctx.stroke();
+        }
+        ctx.restore();
+      }
+      function ring(cx, cy, r, col, a = 0.35, dash = [10, 12], ry = null, lw = 2) {
+        ctx.save(); ctx.setLineDash(dash); ctx.strokeStyle = rgba(col, a); ctx.lineWidth = lw;
+        ctx.beginPath(); ctx.ellipse(cx, cy, r, ry ?? r, 0, 0, TAU); ctx.stroke(); ctx.restore();
+      }
+      function cross(x, y, label = "质心", a = 1) {
+        ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+        const s = 14 * (1 + 0.3 * K);
+        ctx.beginPath(); ctx.moveTo(x - s, y); ctx.lineTo(x + s, y); ctx.moveTo(x, y - s); ctx.lineTo(x, y + s); ctx.stroke();
+        ctx.beginPath(); ctx.arc(x, y, 6, 0, TAU); ctx.stroke();
+        if (label) text(label, x, y + 46, C.white, 26, "center", 0.85);
+        ctx.restore();
+      }
+      function text(s, x, y, col, size = 28, align = "center", a = 1, weight = 600) {
+        ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = rgba(col, 1); ctx.font = `${weight} ${size}px ${FONT}`;
+        ctx.textAlign = align; ctx.textBaseline = "middle";
+        ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 10;
+        ctx.fillText(s, x, y); ctx.restore();
+      }
+      function arrow(x0, y0, x1, y1, col, w = 5, a = 1) {
+        const ang = Math.atan2(y1 - y0, x1 - x0), h = 18 + w;
+        ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = rgba(col, 1); ctx.fillStyle = rgba(col, 1); ctx.lineWidth = w; ctx.lineCap = "round";
+        ctx.shadowColor = rgba(col, 0.8); ctx.shadowBlur = 16;
+        ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1 - Math.cos(ang) * h * 0.6, y1 - Math.sin(ang) * h * 0.6); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x1, y1);
+        ctx.lineTo(x1 - Math.cos(ang - 0.45) * h, y1 - Math.sin(ang - 0.45) * h);
+        ctx.lineTo(x1 - Math.cos(ang + 0.45) * h, y1 - Math.sin(ang + 0.45) * h);
+        ctx.closePath(); ctx.fill(); ctx.restore();
+      }
+      // circular binary: k = m1/m2 (star 1 heavier, nearer the barycentre)
+      function binaryPos(cx, cy, sep, k, th) {
+        const r1 = sep / (1 + k), r2 = (sep * k) / (1 + k);
+        return { r1, r2, p1: [cx + r1 * Math.cos(th + Math.PI), cy + r1 * Math.sin(th + Math.PI)], p2: [cx + r2 * Math.cos(th), cy + r2 * Math.sin(th)] };
+      }
+      function drawBinary(cx, cy, sep, k, th, o = {}) {
+        const { r1, r2, p1, p2 } = binaryPos(cx, cy, sep, k, th);
+        const a = o.alpha ?? 1;
+        if (o.orbits !== false) {
+          if (Math.abs(r1 - r2) < 2) ring(cx, cy, r1, C.white, 0.22 * a);
+          else { ring(cx, cy, r1, o.c1 || C.blue, 0.3 * a); ring(cx, cy, r2, o.c2 || C.orange, 0.3 * a); }
+        }
+        trail(cx, cy, r1, th + Math.PI, o.c1 || C.blue, 1.4, a);
+        trail(cx, cy, r2, th, o.c2 || C.orange, 1.4, a);
+        star(p1[0], p1[1], o.s1 || 28, o.c1 || C.blue, 1, a);
+        star(p2[0], p2[1], o.s2 || 28, o.c2 || C.orange, 1, a);
+        return { p1, p2, r1, r2 };
+      }
+      const orbitTh = (u, period = 2 * BAR, ph = 0) => (TAU * u) / period + ph;
+
+      function overlap(d, ra, rb) {
+        if (d >= ra + rb) return 0;
+        if (d <= Math.abs(ra - rb)) return Math.PI * Math.min(ra, rb) ** 2;
+        const x = ra * ra * Math.acos(clamp((d * d + ra * ra - rb * rb) / (2 * d * ra), -1, 1)) + rb * rb * Math.acos(clamp((d * d + rb * rb - ra * ra) / (2 * d * rb), -1, 1));
+        return x - 0.5 * Math.sqrt(Math.max(0, (-d + ra + rb) * (d + ra - rb) * (d - ra + rb) * (d + ra + rb)));
+      }
+
+      // ---------------- scenes ----------------
+      function scene0(u) {
+        if (u < 7.5) {
+          const z = smooth(u / 7.5);
+          const r = 10 + 14 * z + 3 * Math.sin(u * 5);
+          star(960, 540, r, C.yellow, 1 + 0.6 * z, smooth(u / 1.2));
+          // subtle wobble hint just before the split
+          if (u > 5.625) ring(960, 540, 40 + 30 * Math.sin((u - 5.625) * 6), C.white, 0.15 * smooth((u - 5.625) / 1));
+        } else {
+          const tau = u - 7.5;
+          const sep = 340 * outBack(tau / (B * 1.6));
+          const th = 1.1 * tau + 0.2 * tau * tau;
+          drawBinary(960, 540, sep, 1, th, { s1: 24, s2: 24, c1: C.blue, c2: C.orange, orbits: tau > 1.5 });
+        }
+      }
+      function scene1(u) {
+        if (u < 2 * BAR) {
+          drawBinary(960, 520, 820, 1, orbitTh(u, 2 * BAR, -0.4), { s1: 40, s2: 40, alpha: 0.75 });
+          return;
+        }
+        const cx = 1310, cy = 570, sep = 440;
+        const th = orbitTh(u, 2 * BAR, 0.3);
+        const appear = smooth((u - 2 * BAR) / 0.4);
+        ctx.save(); ctx.globalAlpha = appear;
+        const { p1, p2 } = drawBinary(cx, cy, sep, 1, th, { s1: 34, s2: 34 });
+        cross(cx, cy, u > 5 * BAR ? "共同质心" : "", 1);
+        if (u > 3 * BAR) {
+          // mutual gravity arrows, punching on every kick
+          const L = 70 + 40 * K, ux = (p2[0] - p1[0]) / sep, uy = (p2[1] - p1[1]) / sep;
+          const g = smooth((u - 3 * BAR) / 0.4);
+          arrow(p1[0] + ux * 42, p1[1] + uy * 42, p1[0] + ux * (42 + L), p1[1] + uy * (42 + L), C.gold, 6, g);
+          arrow(p2[0] - ux * 42, p2[1] - uy * 42, p2[0] - ux * (42 + L), p2[1] - uy * (42 + L), C.gold, 6, g);
+          text("引力", p1[0] + ux * (60 + L / 2) + uy * 46, p1[1] + uy * (60 + L / 2) - ux * 46, C.gold, 30, "center", g);
+        }
+        text("恒星 A", p1[0] - Math.cos(th) * 80, p1[1] - Math.sin(th) * 80, C.blue, 28);
+        text("恒星 B", p2[0] + Math.cos(th) * 80, p2[1] + Math.sin(th) * 80, C.orange, 28);
+        ctx.restore();
+      }
+      function massRatio(u) {
+        const a = smooth((u - 2 * BAR) / (B * 1.2)), b = smooth((u - 4 * BAR) / (B * 1.2));
+        return 1 + a * 1 + b * 3; // 1 -> 2 -> 5
+      }
+      function scene2(u) {
+        const cx = 1280, cy = 560, sep = 450;
+        const k = massRatio(u);
+        const th = orbitTh(u, 2 * BAR, 0.9);
+        const m1 = (2 * k) / (1 + k), m2 = 2 / (1 + k);
+        const { p1, p2, r1, r2 } = drawBinary(cx, cy, sep, k, th, { s1: 28 * Math.pow(m1, 0.6), s2: 28 * Math.pow(m2, 0.6) });
+        // radius lines
+        ctx.save(); ctx.strokeStyle = "rgba(255,255,255,0.55)"; ctx.lineWidth = 2; ctx.setLineDash([6, 6]);
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(p1[0], p1[1]); ctx.moveTo(cx, cy); ctx.lineTo(p2[0], p2[1]); ctx.stroke(); ctx.restore();
+        const nrm = [-Math.sin(th), Math.cos(th)];
+        if (r1 > 60) text("r₁", (cx + p1[0]) / 2 + nrm[0] * 30, (cy + p1[1]) / 2 + nrm[1] * 30, C.blue, 30);
+        text("r₂", (cx + p2[0]) / 2 + nrm[0] * 30, (cy + p2[1]) / 2 + nrm[1] * 30, C.orange, 30);
+        const dir = [Math.cos(th), Math.sin(th)];
+        const o1 = 48 + 28 * Math.pow(m1, 0.6), o2 = 44 + 28 * Math.pow(m2, 0.6);
+        text("m₁", p1[0] - dir[0] * o1, p1[1] - dir[1] * o1, C.blue, 32);
+        text("m₂", p2[0] + dir[0] * o2, p2[1] + dir[1] * o2, C.orange, 32);
+        cross(cx, cy, "");
+        text("质心", cx - nrm[0] * 62, cy - nrm[1] * 62, C.white, 26, "center", 0.85);
+        const shown = k < 1.5 ? 1 : k < 3.5 ? 2 : 5;
+        const pop = 1 + 0.25 * Math.exp(-Math.min(Math.abs(u - 2 * BAR), Math.abs(u - 4 * BAR) + (u < 4 * BAR ? 99 : 0)) / 0.12) * (u >= 2 * BAR ? 1 : 0);
+        text(`m₁ : m₂ = ${shown} : 1`, cx, 130, C.white, 54 * pop, "center", 1, 800);
+      }
+      function scene3(u) {
+        const T1 = BAR, T2 = BAR * Math.pow(2, 1.5);
+        const sys = [
+          { cx: 1030, cy: 610, sep: 190, T: T1, lab: "a", per: "周期 T", ph: 0.2 },
+          { cx: 1540, cy: 610, sep: 380, T: T2, lab: "2a", per: "周期 2.83 T", ph: 2.4 },
+        ];
+        sys.forEach((s, i) => {
+          const a = smooth((u - i * B * 2) / 0.4);
+          ctx.save(); ctx.globalAlpha = a;
+          drawBinary(s.cx, s.cy, s.sep, 1, orbitTh(u, s.T, s.ph), { s1: 20, s2: 20, c1: i ? C.violet : C.blue, c2: C.orange });
+          cross(s.cx, s.cy, "", 0.8);
+          // separation bracket
+          const y = s.cy + s.sep / 2 + 50;
+          ctx.strokeStyle = "rgba(255,255,255,0.6)"; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(s.cx - s.sep / 2, y); ctx.lineTo(s.cx + s.sep / 2, y);
+          ctx.moveTo(s.cx - s.sep / 2, y - 10); ctx.lineTo(s.cx - s.sep / 2, y + 10);
+          ctx.moveTo(s.cx + s.sep / 2, y - 10); ctx.lineTo(s.cx + s.sep / 2, y + 10); ctx.stroke();
+          text(s.lab, s.cx, y + 34, C.white, 34, "center", 1, 700);
+          text(s.per, s.cx, s.cy - s.sep / 2 - 70, C.gold, 34, "center", 1, 700);
+          const laps = Math.floor((u + (s.ph / TAU) * s.T) / s.T);
+          const since = (u + (s.ph / TAU) * s.T) % s.T;
+          text(`第 ${laps + 1} 圈`, s.cx, s.cy - s.sep / 2 - 26, C.white, 26, "center", 0.7);
+          // lap-complete ring burst
+          if (laps > 0 && since < 0.5) ring(s.cx, s.cy, s.sep / 2 + since * 160, C.gold, 0.6 * (1 - since / 0.5), [], null, 3);
+          ctx.restore();
+        });
+      }
+      function kepler(u, T, e) {
+        const M = (TAU * u) / T;
+        let E = M;
+        for (let i = 0; i < 12; i++) E = E - (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+        return [Math.cos(E) - e, Math.sqrt(1 - e * e) * Math.sin(E)];
+      }
+      function scene4(u) {
+        const cx = 1360, cy = 570, a = 500, e = 0.6, T = 4 * BAR, k = 2;
+        const f1 = 1 / (1 + k), f2 = k / (1 + k);
+        const dim = u > 4 * BAR ? lerp(1, 0.25, smooth((u - 4 * BAR) / 0.6)) : 1;
+        ctx.save(); ctx.globalAlpha = dim;
+        // orbit paths
+        const bS = a * Math.sqrt(1 - e * e);
+        ring(cx - f2 * a * e, cy, f2 * a, C.orange, 0.35, [10, 12], f2 * bS);
+        ring(cx + f1 * a * e, cy, f1 * a, C.blue, 0.35, [10, 12], f1 * bS);
+        // equal-area wedge swept by star 2 during the last 0.9 s
+        ctx.beginPath(); ctx.moveTo(cx, cy);
+        for (let i = 0; i <= 30; i++) { const r = kepler(u - 0.9 + (0.9 * i) / 30, T, e); ctx.lineTo(cx + f2 * a * r[0], cy + f2 * a * r[1]); }
+        ctx.closePath(); ctx.fillStyle = "rgba(255,170,90,0.28)"; ctx.fill();
+        ctx.strokeStyle = "rgba(255,200,140,0.7)"; ctx.lineWidth = 2; ctx.stroke();
+        const r = kepler(u, T, e);
+        const p2 = [cx + f2 * a * r[0], cy + f2 * a * r[1]], p1 = [cx - f1 * a * r[0], cy - f1 * a * r[1]];
+        star(p1[0], p1[1], 30, C.blue);
+        star(p2[0], p2[1], 22, C.orange);
+        cross(cx, cy, "");
+        const speed = Math.hypot(...[0, 1].map((j) => kepler(u + 0.01, T, e)[j] - r[j])) * 100;
+        text("近星点 · 最快", cx + f2 * a * (1 - e) + 30, cy - 90, C.gold, 30, "center", 0.9 * dim);
+        text("远星点 · 最慢", cx - f2 * a * (1 + e) + 40, cy - 80, C.blue, 30, "center", 0.9 * dim);
+        // speed meter
+        const mx = 1040, my = 960, mw = 600;
+        ctx.fillStyle = "rgba(255,255,255,0.12)"; ctx.fillRect(mx, my, mw, 14);
+        ctx.fillStyle = rgba(C.orange, 1); ctx.fillRect(mx, my, mw * clamp(speed / 3.2), 14);
+        text("速度", mx - 20, my + 7, C.white, 26, "right", 0.9);
+        ctx.restore();
+        if (u > 4 * BAR) {
+          // build-up: pulsing rings on every 16th of the snare roll rhythm
+          const v = u - 4 * BAR;
+          const step = v < 2 * BAR ? B : v < 3 * BAR ? B / 2 : B / 4;
+          const ph = (v % step) / step;
+          ring(960, 650, 120 + ph * 260, C.gold, 0.5 * (1 - ph) * smooth(v / BAR), [], null, 4);
+        }
+      }
+      function scene5(u) {
+        const cx = 1250;
+        if (u < 2 * BAR) {
+          // telescope view
+          const R = 330, cy = 560, a = smooth(u / 0.3);
+          ctx.save(); ctx.globalAlpha = a;
+          ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU);
+          const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+          g.addColorStop(0, "#0b1430"); g.addColorStop(1, "#03050c");
+          ctx.fillStyle = g; ctx.fill();
+          ctx.lineWidth = 10; ctx.strokeStyle = "rgba(160,190,255,0.5)"; ctx.stroke();
+          ctx.save(); ctx.clip();
+          ctx.strokeStyle = "rgba(160,190,255,0.18)"; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(cx - R, cy); ctx.lineTo(cx + R, cy); ctx.moveTo(cx, cy - R); ctx.lineTo(cx, cy + R); ctx.stroke();
+          const { p1, p2 } = binaryPos(cx, cy, 230, 2, orbitTh(u, 2 * BAR, -0.6));
+          ring(cx, cy, 230 * 2 / 3, C.white, 0.15); ring(cx, cy, 230 / 3, C.white, 0.15);
+          star(p1[0], p1[1], 26, C.blue, 1.2);
+          star(p2[0], p2[1], 9, C.white, 0.8);
+          text("天狼星 A", p1[0], p1[1] + 62, C.blue, 26);
+          text("天狼星 B", p2[0], p2[1] + 40, C.white, 24);
+          ctx.restore(); ctx.restore();
+          return;
+        }
+        if (u < 5 * BAR) {
+          // spectroscopic binary
+          const v = u - 2 * BAR, cy = 330, rx = 290, ry = 80;
+          const ph = orbitTh(v, 2 * BAR, -Math.PI / 2);
+          ring(cx, cy, rx, C.white, 0.25, [8, 10], ry);
+          ring(cx, cy, rx * 0.5, C.white, 0.15, [8, 10], ry * 0.5);
+          const pA = [cx + rx * Math.cos(ph), cy + ry * Math.sin(ph)], pB = [cx - rx * 0.5 * Math.cos(ph), cy - ry * 0.5 * Math.sin(ph)];
+          const front = Math.sin(ph) > 0;
+          const drawA = () => star(pA[0], pA[1], 30 * (1 + 0.12 * Math.sin(ph)), C.yellow);
+          const drawB = () => star(pB[0], pB[1], 18, C.blue, 0.8, 0.55);
+          if (front) { drawB(); drawA(); } else { drawA(); drawB(); }
+          // observer
+          ctx.save(); ctx.setLineDash([6, 10]); ctx.strokeStyle = "rgba(140,195,255,0.35)"; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(cx, cy + ry + 30); ctx.lineTo(cx, 545); ctx.stroke(); ctx.restore();
+          star(cx, 575, 12, C.cyan, 0.6);
+          text("地球（观测者）", cx + 30, 575, C.cyan, 26, "left");
+          // spectrum
+          const sx = 960, sw = 820, sy = 680, sh = 86;
+          const g = ctx.createLinearGradient(sx, 0, sx + sw, 0);
+          ["#5b2bd6", "#2f5bff", "#18c3ff", "#2ee86b", "#f2ee3a", "#ff9b2a", "#ff3b2a"].forEach((c, i, arr) => g.addColorStop(i / (arr.length - 1), c));
+          ctx.fillStyle = g; ctx.fillRect(sx, sy, sw, sh);
+          const vn = Math.cos(ph); // + = moving towards observer (down the screen)
+          const shift = -vn * 46;
+          [0.17, 0.33, 0.5, 0.64, 0.83].forEach((p) => {
+            const x = sx + sw * p;
+            ctx.fillStyle = "rgba(255,255,255,0.55)"; ctx.fillRect(x - 1, sy - 22, 2, 16);
+            ctx.fillStyle = "#05060c"; ctx.fillRect(x + shift - 4, sy, 8, sh);
+          });
+          text("短波（蓝）", sx, sy + sh + 32, C.blue, 24, "left", 0.8);
+          text("长波（红）", sx + sw, sy + sh + 32, C.red, 24, "right", 0.8);
+          text("刻度 = 静止时的谱线位置", sx, sy - 40, C.white, 22, "left", 0.6);
+          const st = vn > 0.35 ? ["靠近我们 → 谱线蓝移", C.blue] : vn < -0.35 ? ["远离我们 → 谱线红移", C.red] : ["横向运动 → 几乎不移动", C.white];
+          text(st[0], sx + sw / 2, 900, st[1], 44, "center", 1, 800);
+          return;
+        }
+        // eclipsing binary
+        const w = u - 5 * BAR, cy = 360, R1 = 62, R2 = 48, L1 = 1, L2 = 0.35;
+        const st = (tt) => {
+          const ph = orbitTh(tt, 2 * BAR, -Math.PI / 2 + 0.5);
+          const x1 = cx - 115 * Math.cos(ph), y1 = cy - 18 * Math.sin(ph);
+          const x2 = cx + 155 * Math.cos(ph), y2 = cy + 24 * Math.sin(ph);
+          const front2 = Math.sin(ph) > 0;
+          const d = Math.hypot(x2 - x1, y2 - y1);
+          const blocked = front2 ? (overlap(d, R2, R1) / (Math.PI * R1 * R1)) * L1 : (overlap(d, R1, R2) / (Math.PI * R2 * R2)) * L2;
+          return { x1, y1, x2, y2, front2, F: (L1 + L2 - blocked) / (L1 + L2) };
+        };
+        const s = st(w);
+        ring(cx, cy, 155, C.orange, 0.2, [8, 10], 24); ring(cx, cy, 115, C.blue, 0.2, [8, 10], 18);
+        const d1 = () => star(s.x1, s.y1, R1, C.blue, 0.9);
+        const d2 = () => star(s.x2, s.y2, R2, C.orange, 0.8);
+        if (s.front2) { d1(); d2(); } else { d2(); d1(); }
+        // light curve
+        const gx = 1000, gw = 780, top = 640, span = 260, win = 2 * BAR;
+        ctx.strokeStyle = "rgba(255,255,255,0.25)"; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(gx, top); ctx.lineTo(gx, top + span); ctx.lineTo(gx + gw, top + span); ctx.stroke();
+        ctx.save(); ctx.strokeStyle = rgba(C.gold, 1); ctx.lineWidth = 5; ctx.shadowColor = rgba(C.gold, 0.8); ctx.shadowBlur = 14;
+        ctx.beginPath();
+        for (let i = 0; i <= 240; i++) {
+          const tt = w - win + (win * i) / 240;
+          const F = st(tt).F;
+          const x = gx + (gw * i) / 240, y = top + 20 + (1 - F) * 480;
+          i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        }
+        ctx.stroke(); ctx.restore();
+        star(gx + gw, top + 20 + (1 - s.F) * 480, 8, C.gold, 0.8);
+        text("亮度", gx - 18, top + 20, C.white, 26, "right", 0.8);
+        text("时间 →", gx + gw, top + span + 34, C.white, 24, "right", 0.7);
+        if (s.F < 0.8) text("主食", gx + gw - 10, top + 20 + (1 - s.F) * 480 + 46, C.gold, 26, "right");
+      }
+      function bez(p0, p1, p2, p3, s) {
+        const m = 1 - s;
+        return [0, 1].map((j) => m * m * m * p0[j] + 3 * m * m * s * p1[j] + 3 * m * s * s * p2[j] + s * s * s * p3[j]);
+      }
+      // black hole inspiral, merger exactly at the 105 s downbeat
+      const BH = { tc: 4 * BAR, w0: 2.4, s0: 440 };
+      const bhX = (tau) => Math.max(1 - tau / BH.tc, 1e-4);
+      const bhTh = (tau) => (BH.w0 * BH.tc * (1 - Math.pow(bhX(tau), 5 / 8))) / (5 / 8);
+      function blackHole(x, y, r, a = 1) {
+        ctx.save(); ctx.globalAlpha = a; ctx.globalCompositeOperation = "lighter";
+        const g = ctx.createRadialGradient(x, y, r * 0.9, x, y, r * 3.2 * (1 + 0.25 * K));
+        g.addColorStop(0, "rgba(255,190,110,0.95)"); g.addColorStop(0.25, "rgba(255,120,60,0.45)"); g.addColorStop(1, "rgba(120,60,255,0)");
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r * 3.2 * (1 + 0.25 * K), 0, TAU); ctx.fill();
+        ctx.globalCompositeOperation = "source-over"; ctx.fillStyle = "#000";
+        ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+        ctx.restore();
+      }
+      function scene6(u) {
+        if (u < 4 * BAR) {
+          const gx = 940, gy = 560, cxs = 1500;
+          const pulse = 1 + 0.03 * K;
+          // giant star, distorted towards companion (Roche lobe overflow)
+          ctx.save(); ctx.globalCompositeOperation = "lighter";
+          let g = ctx.createRadialGradient(gx, gy, 0, gx, gy, 520);
+          g.addColorStop(0, "rgba(255,120,70,0.5)"); g.addColorStop(1, "rgba(255,80,40,0)");
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(gx, gy, 520, 0, TAU); ctx.fill(); ctx.restore();
+          g = ctx.createRadialGradient(gx - 50, gy - 50, 20, gx, gy, 220 * pulse);
+          g.addColorStop(0, "#ffe2b0"); g.addColorStop(0.5, "#ff8a4a"); g.addColorStop(1, "#c8402a");
+          ctx.fillStyle = g; ctx.beginPath();
+          ctx.moveTo(gx, gy - 210 * pulse);
+          ctx.bezierCurveTo(gx + 150, gy - 210, gx + 200, gy - 60, gx + 248, gy);
+          ctx.bezierCurveTo(gx + 200, gy + 60, gx + 150, gy + 210, gx, gy + 210 * pulse);
+          ctx.arc(gx, gy, 210 * pulse, Math.PI / 2, -Math.PI / 2);
+          ctx.fill();
+          // stream
+          const P = [[gx + 246, gy], [gx + 380, gy - 110], [cxs - 140, gy - 130], [cxs - 30, gy - 34]];
+          for (let i = 0; i < 90; i++) {
+            const s = (u * 0.55 + i / 90) % 1;
+            const p = bez(...P, s);
+            const wob = 6 * Math.sin(i * 1.7 + u * 3);
+            const col = [255, lerp(150, 240, s), lerp(80, 220, s)];
+            star(p[0], p[1] + wob, 4 * (1 - 0.5 * s), col, 0.6, 0.9);
+          }
+          // accretion disk
+          ctx.save(); ctx.globalCompositeOperation = "lighter";
+          for (let i = 0; i < 6; i++) {
+            ctx.strokeStyle = `rgba(${255},${170 + i * 14},${110 + i * 25},${0.55 - i * 0.07})`;
+            ctx.lineWidth = 10 - i;
+            ctx.beginPath(); ctx.ellipse(cxs, gy, 150 - i * 20, 40 - i * 5, -0.12, 0, TAU); ctx.stroke();
+          }
+          for (let i = 0; i < 70; i++) {
+            const rr = 30 + ((i * 37) % 120), a = i * 2.39 + u * (4.5 - rr / 50);
+            const x = cxs + rr * Math.cos(a), y = gy + rr * 0.27 * Math.sin(a) - rr * 0.12 * Math.cos(a);
+            ctx.fillStyle = `rgba(255,${200 + (i % 50)},${170 + (i % 80)},0.8)`;
+            ctx.fillRect(x - 2, y - 2, 4, 4);
+          }
+          ctx.restore();
+          star(cxs, gy, 13, C.white, 1.6);
+          text("红巨星", gx, gy + 280, C.orange, 30);
+          text("致密星 + 吸积盘", cxs, gy + 120, C.white, 30);
+          return;
+        }
+        const tau = u - 4 * BAR, cx = 1260, cy = 470;
+        const x = bhX(tau);
+        const sep = BH.s0 * Math.pow(x, 0.25), th = bhTh(tau);
+        // gravitational-wave crests: one per half orbit
+        const thMax = bhTh(tau);
+        for (let kk = 1; kk * Math.PI <= thMax; kk++) {
+          const xk = Math.pow(1 - (kk * Math.PI * (5 / 8)) / (BH.w0 * BH.tc), 8 / 5);
+          const tk = BH.tc * (1 - xk);
+          const rad = (tau - tk) * 300 + 40;
+          ring(cx, cy, rad, C.cyan, clamp(0.55 * (1 - rad / 1500)), [], rad * 0.82, 3);
+        }
+        const q = 36 / 65;
+        const p1 = [cx - sep * (1 - q) * Math.cos(th), cy - sep * (1 - q) * Math.sin(th) * 0.82];
+        const p2 = [cx + sep * q * Math.cos(th), cy + sep * q * Math.sin(th) * 0.82];
+        trail(cx, cy, sep * (1 - q), th + Math.PI, C.orange, 1.6, 1, sep * (1 - q) * 0.82);
+        trail(cx, cy, sep * q, th, C.violet, 1.6, 1, sep * q * 0.82);
+        blackHole(p1[0], p1[1], 24);
+        blackHole(p2[0], p2[1], 21);
+        if (x > 0.35) { text("36 M☉", p1[0], p1[1] - 70, C.orange, 26); text("29 M☉", p2[0], p2[1] - 66, C.violet, 26); }
+        // chirp waveform
+        const gx = 760, gw = 1060, gy = 900;
+        ctx.save(); ctx.strokeStyle = rgba(C.cyan, 1); ctx.lineWidth = 4; ctx.shadowColor = rgba(C.cyan, 0.9); ctx.shadowBlur = 14;
+        ctx.beginPath();
+        for (let i = 0; i <= 500; i++) {
+          const ts = tau - 3 + (3 * i) / 500;
+          const xs = Math.max(1 - ts / BH.tc, 1e-4);
+          const amp = 16 * Math.min(Math.pow(xs, -0.25), 4.5);
+          const th2 = (BH.w0 * BH.tc * (1 - Math.pow(xs, 5 / 8))) / (5 / 8);
+          const y = gy - amp * Math.cos(2 * th2);
+          i ? ctx.lineTo(gx + (gw * i) / 500, y) : ctx.moveTo(gx + (gw * i) / 500, y);
+        }
+        ctx.stroke(); ctx.restore();
+        text("引力波信号", gx, gy - 92, C.cyan, 26, "left", 0.9);
+      }
+      function scene7(u) {
+        // merger ringdown
+        if (u < 3 * BAR) {
+          const a = 1 - smooth((u - BAR) / BAR);
+          blackHole(1260, 470, 34 * (1 + 0.5 * Math.exp(-u / 0.3)), a);
+          for (let i = 0; i < 6; i++) {
+            const r = (u - i * 0.18) * 700;
+            if (r > 0) ring(1260, 470, r, C.cyan, clamp(0.7 * (1 - r / 1800)) * a, [], r * 0.82, 6 - i * 0.6);
+          }
+        }
+        if (u > BAR) {
+          const a = smooth((u - BAR) / BAR);
+          const m = smooth((u - 5 * BAR) / (B * 1.5));
+          const cx = lerp(1360, 960, m), cy = lerp(560, 560, m), sep = lerp(360, 420, m);
+          const fade = 1 - smooth((u - 6.6 * BAR) / (1.4 * BAR));
+          drawBinary(cx, cy, sep, 1, orbitTh(u, 2 * BAR, 0), { s1: 30, s2: 30, alpha: a * fade });
+          if (m < 0.5) cross(cx, cy, "", a * (1 - m * 2));
+        }
+      }
+
+      function hud(t) {
+        ctx.save();
+        ctx.font = `600 22px "Inter", ${FONT}`; ctx.fillStyle = "rgba(255,255,255,0.55)"; ctx.textBaseline = "middle";
+        ctx.textAlign = "right";
+        const si = Math.floor(t / SEC);
+        if (si >= 1 && si <= 6) ctx.fillText(`CHAPTER 0${si} / 06`, 1860, 56);
+        // beat dots
+        const beat = Math.floor(t / B) % 4, e = Math.exp(-(t % B) / 0.16);
+        for (let i = 0; i < 4; i++) {
+          const on = i === beat;
+          ctx.fillStyle = on ? rgba(C.orange, 0.95) : "rgba(255,255,255,0.22)";
+          ctx.beginPath(); ctx.arc(1756 + i * 30, 1020, on ? 7 + 5 * e : 6, 0, TAU); ctx.fill();
+        }
+        // progress
+        ctx.fillStyle = "rgba(255,255,255,0.12)"; ctx.fillRect(60, 1048, 1800, 4);
+        ctx.fillStyle = rgba(C.blue, 0.85); ctx.fillRect(60, 1048, (1800 * t) / DUR, 4);
+        for (let i = 1; i < 8; i++) { ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.fillRect(60 + (1800 * i * SEC) / DUR - 1, 1042, 2, 16); }
+        ctx.restore();
+      }
+
+      const SCENES = [scene0, scene1, scene2, scene3, scene4, scene5, scene6, scene7];
+      function draw(t) {
+        t = clamp(Number(t) || 0, 0, DUR - 1e-6);
+        K = kickEnv(t);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+        background(t);
+        const ce = crashEnv(t, 0.3);
+        const sh = 18 * ce + 3 * K;
+        ctx.setTransform(1, 0, 0, 1, sh * Math.sin(t * 91), sh * Math.cos(t * 77));
+        const si = Math.min(7, Math.floor(t / SEC));
+        SCENES[si](t - si * SEC);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        hud(t);
+        const fl = crashEnv(t, 0.16);
+        if (fl > 0.003) { ctx.fillStyle = `rgba(255,255,255,${0.85 * fl})`; ctx.fillRect(0, 0, W, H); }
+      }
+      window.addEventListener("hf-seek", (e) => draw(e.detail && e.detail.time));
+      draw(0);
+
+      // ===================== GSAP text timeline (all on beat positions) =====================
+      const tl = gsap.timeline({ paused: true });
+      const proxy = { t: 0 };
+      tl.to(proxy, { t: DUR, duration: DUR, ease: "none", onUpdate: () => draw(proxy.t) }, 0);
+
+      const pop = (sel, t, dy = 40) => tl.fromTo(sel, { autoAlpha: 0, y: dy, scale: 0.94 }, { autoAlpha: 1, y: 0, scale: 1, duration: B * 0.7, ease: "back.out(2.4)" }, t);
+      const slam = (sel, t, s = 1.8) => tl.fromTo(sel, { autoAlpha: 0, scale: s }, { autoAlpha: 1, scale: 1, duration: B * 0.55, ease: "expo.out" }, t);
+      const slideIn = (sel, t) => tl.fromTo(sel, { autoAlpha: 0, x: -80 }, { autoAlpha: 1, x: 0, duration: B * 0.6, ease: "expo.out" }, t);
+      const hide = (sel, t) => tl.to(sel, { autoAlpha: 0, y: -24, duration: B * 0.4, ease: "power2.in" }, t - B * 0.4);
+      const header = (sel, t) => tl.fromTo(sel, { autoAlpha: 0, x: -120 }, { autoAlpha: 1, x: 0, duration: B, ease: "expo.out" }, t);
+
+      // S0
+      pop("#s0a", bt(1));
+      hide("#s0a", bt(4));
+      slam("#s0b", bt(4), 2.2);
+      pop("#s0c", bt(5));
+      hide("#s0b", bt(7)); hide("#s0c", bt(7));
+      [["#cd3", 0], ["#cd2", 1], ["#cd1", 2]].forEach(([s, i]) => {
+        slam(s, bt(7, i), 2.4);
+        tl.to(s, { autoAlpha: 0, scale: 0.6, duration: B * 0.35, ease: "power2.in" }, bt(7, i) + B * 0.6);
+      });
+      // S1
+      slam("#title1", bt(8), 2.6);
+      tl.fromTo("#title2", { autoAlpha: 0, scaleX: 1.6 }, { autoAlpha: 1, scaleX: 1, duration: BAR * 0.5, ease: "expo.out" }, bt(8, 1));
+      pop("#title3", bt(8, 2));
+      hide("#title1", bt(10)); hide("#title2", bt(10)); hide("#title3", bt(10));
+      header("#h1", bt(10));
+      slideIn("#b11", bt(11)); slideIn("#b12", bt(12)); slideIn("#b13", bt(13));
+      pop("#c11", bt(13, 2));
+      // S2
+      header("#h2", bt(16));
+      slam("#f21", bt(17), 1.6);
+      pop("#c21", bt(18, 2));
+      pop("#c22", bt(20));
+      pop("#k21", bt(21));
+      // S3
+      header("#h3", bt(24));
+      slam("#f31", bt(25), 1.6);
+      pop("#c31", bt(26, 2));
+      pop("#c32", bt(27, 2));
+      pop("#k31", bt(29));
+      // S4 (breakdown -> build)
+      header("#h4", bt(32));
+      slideIn("#b41", bt(32, 2));
+      slideIn("#b42", bt(33, 2));
+      pop("#k41", bt(34));
+      ["#h4", "#b41", "#b42", "#k41"].forEach((s) => hide(s, bt(36)));
+      slam("#q41", bt(36), 1.4);
+      slam("#q42", bt(38), 3);
+      // S5
+      header("#h5", bt(40));
+      pop("#u51", bt(40, 1)); pop("#c51", bt(40, 2)); pop("#k51", bt(40, 3));
+      ["#u51", "#c51", "#k51"].forEach((s) => hide(s, bt(42)));
+      pop("#u52", bt(42)); pop("#c52", bt(42, 1)); pop("#k52", bt(43, 2));
+      ["#u52", "#c52", "#k52"].forEach((s) => hide(s, bt(45)));
+      pop("#u53", bt(45)); pop("#c53", bt(45, 1)); pop("#k53", bt(46, 2));
+      // S6
+      header("#h6", bt(48));
+      pop("#u61", bt(48, 1)); pop("#c61", bt(49));
+      ["#u61", "#c61"].forEach((s) => hide(s, bt(52)));
+      slam("#u62", bt(52), 1.6); pop("#c62", bt(52, 2)); pop("#k62", bt(53, 2));
+      // S7
+      header("#h7", bt(57));
+      ["#r1", "#r2", "#r3", "#r4", "#r5"].forEach((s, i) => slideIn(s, bt(57, 2 + i * 2)));
+      ["#h7", "#r1", "#r2", "#r3", "#r4", "#r5"].forEach((s) => hide(s, bt(61)));
+      slam("#endTitle", bt(61), 2.2);
+      pop("#endSub", bt(61, 2));
+      tl.to("#fadeout", { opacity: 1, duration: 2.4, ease: "power1.in" }, DUR - 2.5);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+node_modules/
+*.mp4
+video/bgm.wav
+video/.hyperframes/
+renders/
+snapshots/
